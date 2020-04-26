@@ -1,0 +1,32 @@
+service: notifix-cargo
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: prod
+  region: us-east-1
+
+usagePlan: 
+    quota:
+      limit: 5000
+      offset: 2
+      period: MONTH
+    throttle:
+      burstLimit: 200
+      rateLimit: 100
+      
+functions:
+
+  checker:
+    handler: handler.checker 
+    events:
+      - schedule: rate(15 minutes)
+    environment:
+      URL: "https://ws.caexlogistics.com/trackingMov/api/Tracking/Get?"
+      GUIA: "guia="
+      TIME: "&_="
+      ACCOUNTSID: ""
+      AUTHTOKEN: ""
+      FROM: ""
+      TO: ""
+      BODY: "NOTIFICADOR\n\n Ha cambiado el status a: "
